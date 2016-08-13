@@ -15,14 +15,14 @@ def login():
         email = request.form["email"]
         userObj = User()
         user = userObj.get_by_email_w_password(email)
-     	if user and flask_bcrypt.check_password_hash(user.password,request.form["password"]) and user.is_active():
-			remember = request.form.get("remember", "no") == "yes"
+        if user and flask_bcrypt.check_password_hash(user.password,request.form["password"]) and user.is_active:
+                        remember = request.form.get("remember", "no") == "yes"
 
-			if login_user(user, remember=remember):
-				flash("Logged in!")
-				return redirect('/notes/create')
-			else:
-				flash("unable to log you in")
+                        if login_user(user, remember=remember):
+                                flash("Logged in!")
+                                return redirect('/notes/create')
+                        else:
+                                flash("unable to log you in")
 
     return render_template("/auth/login.html")
 
@@ -31,44 +31,44 @@ def login():
 #
 @auth_flask_login.route("/register", methods=["GET","POST"])
 def register():
-	
-	registerForm = forms.SignupForm(request.form)
-	current_app.logger.info(request.form)
+        
+        registerForm = forms.SignupForm(request.form)
+        current_app.logger.info(request.form)
 
-	if request.method == 'POST' and registerForm.validate() == False:
-		current_app.logger.info(registerForm.errors)
-		return "uhoh registration error"
+        if request.method == 'POST' and registerForm.validate() == False:
+                current_app.logger.info(registerForm.errors)
+                return "uhoh registration error"
 
-	elif request.method == 'POST' and registerForm.validate():
-		email = request.form['email']
-		
-		# generate password hash
-		password_hash = flask_bcrypt.generate_password_hash(request.form['password'])
+        elif request.method == 'POST' and registerForm.validate():
+                email = request.form['email']
+                
+                # generate password hash
+                password_hash = flask_bcrypt.generate_password_hash(request.form['password'])
 
-		# prepare User
-		user = User(email,password_hash)
-		print user
+                # prepare User
+                user = User(email,password_hash)
+                print(user)
 
-		try:
-			user.save()
-			if login_user(user, remember="no"):
-				flash("Logged in!")
-				return redirect('/')
-			else:
-				flash("unable to log you in")
+                try:
+                        user.save()
+                        if login_user(user, remember="no"):
+                                flash("Logged in!")
+                                return redirect('/')
+                        else:
+                                flash("unable to log you in")
 
-		except:
-			flash("unable to register with that email address")
-			current_app.logger.error("Error on registration - possible duplicate emails")
+                except:
+                        flash("unable to register with that email address")
+                        current_app.logger.error("Error on registration - possible duplicate emails")
 
-	# prepare registration form			
-	# registerForm = RegisterForm(csrf_enabled=True)
-	templateData = {
+        # prepare registration form                     
+        # registerForm = RegisterForm(csrf_enabled=True)
+        templateData = {
 
-		'form' : registerForm
-	}
+                'form' : registerForm
+        }
 
-	return render_template("/auth/register.html", **templateData)
+        return render_template("/auth/register.html", **templateData)
 
 @auth_flask_login.route("/reauth", methods=["GET", "POST"])
 @login_required
@@ -91,15 +91,15 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
-	return redirect('/login')
+        return redirect('/login')
 
 @login_manager.user_loader
 def load_user(id):
-	if id is None:
-		redirect('/login')
-	user = User()
-	user.get_by_id(id)
-	if user.is_active():
-		return user
-	else:
-		return None
+        if id is None:
+                redirect('/login')
+        user = User()
+        user.get_by_id(id)
+        if user.is_active:
+                return user
+        else:
+                return None

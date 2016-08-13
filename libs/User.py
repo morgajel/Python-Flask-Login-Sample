@@ -21,14 +21,14 @@ class User(UserMixin):
     def save(self): 
         newUser = models.User(email=self.email, password=self.password, active=self.active)
         newUser.save()
-        print "new user id = %s " % newUser.id
+        print("new user id = %s " % newUser.id)
         self.id = newUser.id
         return self.id
 
     def get_by_email(self, email):
 
-    	dbUser = models.User.objects.get(email=email)
-    	if dbUser:
+        dbUser = models.User.objects.get(email=email)
+        if dbUser:
             self.email = dbUser.email
             self.active = dbUser.active
             self.id = dbUser.id
@@ -50,7 +50,7 @@ class User(UserMixin):
             else:
                 return None
         except:
-            print "there was an error"
+            print("there was an error")
             return None
 
     def get_mongo_doc(self):
@@ -60,15 +60,15 @@ class User(UserMixin):
             return None
 
     def get_by_id(self, id):
-    	dbUser = models.User.objects.with_id(id)
-    	if dbUser:
-    		self.email = dbUser.email
-    		self.active = dbUser.active
-    		self.id = dbUser.id
+        dbUser = models.User.objects.with_id(id)
+        if dbUser:
+                self.email = dbUser.email
+                self.active = dbUser.active
+                self.id = dbUser.id
 
-    		return self
-    	else:
-    		return None
+                return self
+        else:
+                return None
 
 
 
